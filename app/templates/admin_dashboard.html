@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Panel de administración{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Panel de administración</h1>
+    <a href="/admin/socios" class="text-emerald-600 font-medium text-sm">Ver todos los socios →</a>
+</div>
+
+<div class="grid sm:grid-cols-3 gap-4 mb-8">
+    <div class="bg-white rounded-xl shadow p-5">
+        <p class="text-sm text-gray-500">Socios totales</p>
+        <p class="text-3xl font-bold">{{ total_socios }}</p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5">
+        <p class="text-sm text-gray-500">Membresías activas</p>
+        <p class="text-3xl font-bold text-emerald-600">{{ socios_activos }}</p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5">
+        <p class="text-sm text-gray-500">Ingresos este mes</p>
+        <p class="text-3xl font-bold">${{ "%.2f"|format(ingresos_mes) }}</p>
+    </div>
+</div>
+
+<div class="bg-white rounded-xl shadow p-5">
+    <h2 class="font-bold mb-3">⚠️ Vencen en los próximos 7 días</h2>
+    {% if proximos_vencimientos %}
+        <ul class="divide-y text-sm">
+            {% for m in proximos_vencimientos %}
+            <li class="py-2 flex justify-between">
+                <a href="/admin/socios/{{ m.user_id }}" class="hover:text-emerald-600">{{ m.user.full_name }}</a>
+                <span class="text-gray-500">{{ m.end_date }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-gray-500 text-sm">No hay vencimientos próximos. 🎉</p>
+    {% endif %}
+</div>
+{% endblock %}

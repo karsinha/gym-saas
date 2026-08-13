@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gym SaaS{% endblock %}</title>
+    <!-- Tailwind vía CDN: para producción real conviene compilarlo, pero para
+         aprender y prototipar rápido esto alcanza de sobra. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800">
+
+    <nav class="bg-gray-900 text-white px-6 py-4 flex justify-between items-center">
+        <a href="/" class="font-bold text-lg">🏋️ Gym SaaS</a>
+        <div class="space-x-4 text-sm">
+            {% if request.session.get("user_id") %}
+                <a href="/dashboard" class="hover:text-emerald-400">Mi cuenta</a>
+                <a href="/admin" class="hover:text-emerald-400">Admin</a>
+                <a href="/logout" class="hover:text-red-400">Salir</a>
+            {% else %}
+                <a href="/login" class="hover:text-emerald-400">Iniciar sesión</a>
+                <a href="/register" class="hover:text-emerald-400">Registrarse</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>

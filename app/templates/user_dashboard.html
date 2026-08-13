@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Mi cuenta{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Hola, {{ user.full_name }} 👋</h1>
+
+<div class="grid md:grid-cols-2 gap-4 mb-8">
+    <div class="bg-white rounded-xl shadow p-5">
+        <h2 class="text-sm font-medium text-gray-500 mb-1">Estado de membresía</h2>
+        {% if membership %}
+            <p class="text-lg font-bold
+                {% if membership.status.value == 'active' %}text-emerald-600{% else %}text-red-600{% endif %}">
+                {{ "Activa" if membership.status.value == "active" else "Vencida" }}
+            </p>
+            <p class="text-sm text-gray-500">Plan: {{ membership.plan_name }}</p>
+            <p class="text-sm text-gray-500">Vence: {{ membership.end_date }}</p>
+            {% if dias_restantes is not none and dias_restantes >= 0 %}
+                <p class="text-sm text-gray-500">Días restantes: {{ dias_restantes }}</p>
+            {% endif %}
+        {% else %}
+            <p class="text-gray-500">Todavía no tenés una membresía asignada. Consultá con el administrador.</p>
+        {% endif %}
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-5">
+        <h2 class="text-sm font-medium text-gray-500 mb-1">Últimos pagos</h2>
+        {% if pagos %}
+            <ul class="text-sm divide-y">
+                {% for p in pagos %}
+                <li class="py-2 flex justify-between">
+                    <span>{{ p.payment_date.strftime("%d/%m/%Y") }}</span>
+                    <span class="font-medium">${{ "%.2f"|format(p.amount) }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500 text-sm">Todavía no registraste pagos.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
