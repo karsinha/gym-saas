@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Bienvenido{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<section class="text-center py-16">
+    <h1 class="text-4xl font-bold mb-4">Entrená con nosotros 💪</h1>
+    <p class="text-gray-500 max-w-xl mx-auto mb-8">
+        Equipamiento de primer nivel, clases grupales y un equipo que te acompaña
+        en cada objetivo. Sumate cuando quieras.
+    </p>
+    <a href="/register" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-700">
+        Registrarme ahora
+    </a>
+</section>
+
+<!-- Planes -->
+<section class="mb-16">
+    <h2 class="text-2xl font-bold text-center mb-8">Nuestros planes</h2>
+    <div class="grid sm:grid-cols-3 gap-6">
+        <div class="bg-white rounded-xl shadow p-6 text-center">
+            <h3 class="font-bold text-lg mb-2">Mensual</h3>
+            <p class="text-3xl font-bold text-emerald-600 mb-2">$15.000</p>
+            <p class="text-sm text-gray-500">Acceso libre a sala de musculación</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-6 text-center border-2 border-emerald-500">
+            <h3 class="font-bold text-lg mb-2">Trimestral</h3>
+            <p class="text-3xl font-bold text-emerald-600 mb-2">$40.000</p>
+            <p class="text-sm text-gray-500">Sala + clases grupales incluidas</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-6 text-center">
+            <h3 class="font-bold text-lg mb-2">Anual</h3>
+            <p class="text-3xl font-bold text-emerald-600 mb-2">$140.000</p>
+            <p class="text-sm text-gray-500">Todo incluido + 2 meses gratis</p>
+        </div>
+    </div>
+</section>
+
+<!-- Horarios -->
+<section class="mb-16">
+    <h2 class="text-2xl font-bold text-center mb-8">Horarios</h2>
+    <div class="bg-white rounded-xl shadow p-6 max-w-md mx-auto text-sm">
+        <div class="flex justify-between py-2 border-b">
+            <span>Lunes a Viernes</span>
+            <span class="font-medium">7:00 – 22:00</span>
+        </div>
+        <div class="flex justify-between py-2">
+            <span>Sábados</span>
+            <span class="font-medium">9:00 – 14:00</span>
+        </div>
+    </div>
+</section>
+
+<!-- CTA final -->
+<section class="text-center py-10 bg-gray-900 text-white rounded-xl">
+    <h2 class="text-2xl font-bold mb-4">¿Listo para empezar?</h2>
+    <a href="/register" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-700">
+        Crear mi cuenta gratis
+    </a>
+</section>
+
+{% endblock %}

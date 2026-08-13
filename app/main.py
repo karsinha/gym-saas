@@ -30,7 +30,4 @@ app.include_router(admin.router)
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request, current_user=Depends(get_current_user)):
     if not current_user:
-        return RedirectResponse("/login")
-    if current_user.role.value == "admin":
-        return RedirectResponse("/admin")
-    return RedirectResponse("/dashboard")
+        return templates.TemplateResponse("landing.html", {"request": request})

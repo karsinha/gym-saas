@@ -151,3 +151,73 @@ def nuevo_pago(
     db.add(pago)
     db.commit()
     return RedirectResponse(f"/admin/socios/{socio_id}", status_code=303)
+
+@router.get("/socios/{socio_id}/editar", response_class=HTMLResponse)
+def editar_socio_form(socio_id: int, request: Request, admin=Depends(require_admin), db: Session = Depends(get_db)):
+    socio = db.query(models.User).filter(models.User.id == socio_id).first()
+    return templates.TemplateResponse(
+        "admin_socio_editar.html", {"request": request, "admin": admin, "socio": socio, "error": None}
+    )
+
+
+@router.post("/socios/{socio_id}/editar")
+def editar_socio_submit(
+    socio_id: int,
+    request: Request,
+    full_name: str = Form(...),
+    email: str = Form(...),
+    admin=Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    socio = db.query(models.User).filter(models.User.id == socio_id).first()
+
+    # Si el email cambió, verificamos que no lo esté usando otro usuario
+    email_en_uso = (
+        db.query(models.User)
+        .filter(models.User.email == email, models.User.id != socio_id)
+        .first()
+    )
+    if email_en_uso:
+        return templates.TemplateResponse(
+            "admin_socio_editar.html",
+            {"request": request, "admin": admin, "socio": socio, "error": "Ese email ya lo usa otro usuario."},
+            status_code=400,
+        )
+
+    socio.full_name = full_name
+    socio.email = email
+    db.commit()
+    return RedirectResponse(f"/admin/socios/{socio_id}", status_code=303)
+
+
+@router.post("/socios/{socio_id}/eliminar")
+def eliminar_socio(socio_id: int, admin=Depends(require_admin), db: Session = Depends(get_db)):
+    socio = db.query(models.User).filter(models.User.id == socio_id).first()
+    if socio:
+        # Gracias a cascade="all, delete-orphan" en el modelo User,
+        # esto borra también sus membresías, pagos y reservas asociadas.
+        db.delete(socio)
+        db.commit()
+    return RedirectResponse("/admin/socios", status_code=303)
+
+
+@router.post("/socios/{socio_id}/membership/{membership_id}/eliminar")
+def eliminar_membresia(
+    socio_id: int, membership_id: int, admin=Depends(require_admin), db: Session = Depends(get_db)
+):
+    membership = db.query(models.Membership).filter(models.Membership.id == membership_id).first()
+    if membership:
+        db.delete(membership)
+        db.commit()
+    return RedirectResponse(f"/admin/socios/{socio_id}", status_code=303)
+
+
+@router.post("/socios/{socio_id}/payment/{payment_id}/eliminar")
+def eliminar_pago(
+    socio_id: int, payment_id: int, admin=Depends(require_admin), db: Session = Depends(get_db)
+):
+    pago = db.query(models.Payment).filter(models.Payment.id == payment_id).first()
+    if pago:
+        db.delete(pago)
+        db.commit()
+    return RedirectResponse(f"/admin/socios/{socio_id}", status_code=303)

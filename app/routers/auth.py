@@ -49,6 +49,7 @@ def register_submit(
     db.refresh(new_user)
 
     request.session["user_id"] = new_user.id
+    request.session["role"] = role.value
     destino = "/admin" if role == models.UserRole.admin else "/dashboard"
     return RedirectResponse(destino, status_code=303)
 
@@ -74,6 +75,7 @@ def login_submit(
         )
 
     request.session["user_id"] = user.id
+    request.session["role"] = user.role.value
     destino = "/admin" if user.role == models.UserRole.admin else "/dashboard"
     return RedirectResponse(destino, status_code=303)
 

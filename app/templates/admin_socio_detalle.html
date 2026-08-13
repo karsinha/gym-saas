@@ -2,7 +2,17 @@
 {% block title %}{{ socio.full_name }}{% endblock %}
 {% block content %}
 <a href="/admin/socios" class="text-sm text-gray-500 hover:text-emerald-600">← Volver a socios</a>
-<h1 class="text-2xl font-bold mt-2 mb-6">{{ socio.full_name }}</h1>
+
+<div class="flex justify-between items-center mt-2 mb-6">
+    <h1 class="text-2xl font-bold">{{ socio.full_name }}</h1>
+    <div class="space-x-3 text-sm">
+        <a href="/admin/socios/{{ socio.id }}/editar" class="text-emerald-600 font-medium">Editar</a>
+        <form method="post" action="/admin/socios/{{ socio.id }}/eliminar" class="inline"
+              onsubmit="return confirm('¿Seguro que querés eliminar a {{ socio.full_name }}? Esto borra también sus membresías y pagos. No se puede deshacer.');">
+            <button type="submit" class="text-red-600 font-medium">Eliminar</button>
+        </form>
+    </div>
+</div>
 
 <div class="grid md:grid-cols-2 gap-6">
 
@@ -11,13 +21,19 @@
         <h2 class="font-bold mb-3">Membresías</h2>
         <ul class="text-sm divide-y mb-4">
             {% for m in memberships %}
-            <li class="py-2 flex justify-between">
-                <span>{{ m.plan_name }} ({{ m.start_date }} → {{ m.end_date }})</span>
-                <span class="{{ 'text-emerald-600' if m.status.value == 'active' else 'text-red-600' }}">
-                    {{ "Activa" if m.status.value == "active" else "Vencida" }}
-                </span>
-            </li>
-            {% else %}
+<li class="py-2 flex justify-between items-center">
+    <span>{{ m.plan_name }} ({{ m.start_date }} → {{ m.end_date }})</span>
+    <span class="flex items-center gap-3">
+        <span class="{{ 'text-emerald-600' if m.status.value == 'active' else 'text-red-600' }}">
+            {{ "Activa" if m.status.value == "active" else "Vencida" }}
+        </span>
+        <form method="post" action="/admin/socios/{{ socio.id }}/membership/{{ m.id }}/eliminar"
+              onsubmit="return confirm('¿Eliminar esta membresía?');">
+            <button type="submit" class="text-red-500 hover:text-red-700 text-xs">✕</button>
+        </form>
+    </span>
+</li>
+{% else %}
             <li class="py-2 text-gray-500">Sin membresías registradas.</li>
             {% endfor %}
         </ul>
@@ -41,11 +57,17 @@
         <h2 class="font-bold mb-3">Pagos</h2>
         <ul class="text-sm divide-y mb-4">
             {% for p in pagos %}
-            <li class="py-2 flex justify-between">
-                <span>{{ p.payment_date.strftime("%d/%m/%Y") }} · {{ p.method }}</span>
-                <span class="font-medium">${{ "%.2f"|format(p.amount) }}</span>
-            </li>
-            {% else %}
+<li class="py-2 flex justify-between items-center">
+    <span>{{ p.payment_date.strftime("%d/%m/%Y") }} · {{ p.method }}</span>
+    <span class="flex items-center gap-3">
+        <span class="font-medium">${{ "%.2f"|format(p.amount) }}</span>
+        <form method="post" action="/admin/socios/{{ socio.id }}/payment/{{ p.id }}/eliminar"
+              onsubmit="return confirm('¿Eliminar este pago?');">
+            <button type="submit" class="text-red-500 hover:text-red-700 text-xs">✕</button>
+        </form>
+    </span>
+</li>
+{% else %}
             <li class="py-2 text-gray-500">Sin pagos registrados.</li>
             {% endfor %}
         </ul>
