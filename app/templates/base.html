@@ -16,7 +16,10 @@
         <div class="space-x-4 text-sm">
             {% if request.session.get("user_id") %}
                 <a href="/dashboard" class="hover:text-emerald-400">Mi cuenta</a>
-                <a href="/admin" class="hover:text-emerald-400">Admin</a>
+                <a href="/clases" class="hover:text-emerald-400">Clases</a>
+                {% if request.session.get("role") == "admin" %}
+                    <a href="/admin" class="hover:text-emerald-400">Admin</a>
+                {% endif %}
                 <a href="/logout" class="hover:text-red-400">Salir</a>
             {% else %}
                 <a href="/login" class="hover:text-emerald-400">Iniciar sesión</a>

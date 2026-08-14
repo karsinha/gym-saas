@@ -221,3 +221,56 @@ def eliminar_pago(
         db.delete(pago)
         db.commit()
     return RedirectResponse(f"/admin/socios/{socio_id}", status_code=303)
+
+@router.get("/clases", response_class=HTMLResponse)
+def listar_clases(request: Request, admin=Depends(require_admin), db: Session = Depends(get_db)):
+    clases = db.query(models.GymClass).order_by(models.GymClass.day_of_week, models.GymClass.start_time).all()
+    data = []
+    for c in clases:
+        anotados = db.query(models.ClassBooking).filter(models.ClassBooking.class_id == c.id).count()
+        data.append({"clase": c, "anotados": anotados})
+    return templates.TemplateResponse(
+        "admin_clases.html", {"request": request, "admin": admin, "data": data}
+    )
+
+
+@router.post("/clases")
+def nueva_clase(
+    name: str = Form(...),
+    instructor: str = Form(""),
+    day_of_week: str = Form(...),
+    start_time: str = Form(...),
+    capacity: int = Form(20),
+    admin=Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    clase = models.GymClass(
+        name=name, instructor=instructor, day_of_week=day_of_week,
+        start_time=start_time, capacity=capacity,
+    )
+    db.add(clase)
+    db.commit()
+    return RedirectResponse("/admin/clases", status_code=303)
+
+
+@router.post("/clases/{class_id}/eliminar")
+def eliminar_clase(class_id: int, admin=Depends(require_admin), db: Session = Depends(get_db)):
+    clase = db.query(models.GymClass).filter(models.GymClass.id == class_id).first()
+    if clase:
+        db.delete(clase)  # cascade borra también las reservas de esa clase
+        db.commit()
+    return RedirectResponse("/admin/clases", status_code=303)
+
+
+@router.post("/socios/{socio_id}/membership/{membership_id}/confirmar")
+def confirmar_membresia(
+    socio_id: int, membership_id: int, admin=Depends(require_admin), db: Session = Depends(get_db)
+):
+    membership = db.query(models.Membership).filter(models.Membership.id == membership_id).first()
+    if membership and membership.status == models.MembershipStatus.pending:
+        dias = (membership.end_date - membership.start_date).days
+        membership.start_date = date.today()
+        membership.end_date = date.today() + timedelta(days=dias)
+        membership.status = models.MembershipStatus.active
+        db.commit()
+    return RedirectResponse(f"/admin/socios/{socio_id}", status_code=303)

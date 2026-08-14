@@ -12,7 +12,7 @@ from app.routers import auth, user, admin
 # Crea las tablas en la base de datos si no existen.
 # (Más adelante, cuando el proyecto crezca, conviene migrar a Alembic
 # para manejar cambios de esquema de forma controlada.)
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Gym SaaS")
 
@@ -29,5 +29,4 @@ app.include_router(admin.router)
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request, current_user=Depends(get_current_user)):
-    if not current_user:
-        return templates.TemplateResponse("landing.html", {"request": request})
+    return templates.TemplateResponse("landing.html", {"request": request, "current_user": current_user})

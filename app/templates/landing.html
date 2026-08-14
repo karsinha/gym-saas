@@ -9,30 +9,110 @@
         Equipamiento de primer nivel, clases grupales y un equipo que te acompaña
         en cada objetivo. Sumate cuando quieras.
     </p>
-    <a href="/register" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-700">
-        Registrarme ahora
-    </a>
+    {% if request.session.get("user_id") %}
+        <a href="/dashboard" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-700">
+            Ir a mi cuenta
+        </a>
+    {% else %}
+        <a href="/register" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-700">
+            Registrarme ahora
+        </a>
+    {% endif %}
 </section>
 
 <!-- Planes -->
 <section class="mb-16">
-    <h2 class="text-2xl font-bold text-center mb-8">Nuestros planes</h2>
-    <div class="grid sm:grid-cols-3 gap-6">
-        <div class="bg-white rounded-xl shadow p-6 text-center">
-            <h3 class="font-bold text-lg mb-2">Mensual</h3>
-            <p class="text-3xl font-bold text-emerald-600 mb-2">$15.000</p>
-            <p class="text-sm text-gray-500">Acceso libre a sala de musculación</p>
+    <h2 class="text-2xl font-bold text-center mb-2">Nuestros planes</h2>
+    <p class="text-gray-500 text-center mb-8">Cuanto más tiempo pagás por adelantado, más ahorrás.</p>
+
+    <div class="grid sm:grid-cols-3 gap-6 items-stretch">
+
+        <!-- Básico -->
+        <div class="bg-white rounded-xl shadow p-6 flex flex-col">
+            <h3 class="font-bold text-lg mb-1">Básico</h3>
+            <p class="text-xs text-gray-400 mb-4">Pago mensual</p>
+            <p class="text-3xl font-bold mb-1">$15.000<span class="text-sm font-normal text-gray-400">/mes</span></p>
+            <p class="text-sm text-gray-500 mb-4">Ideal para empezar sin compromiso.</p>
+            <ul class="text-sm text-gray-600 space-y-2 mb-6 flex-1">
+                <li>✅ Acceso libre a sala de musculación</li>
+                <li>✅ Horario completo (Lun a Sáb)</li>
+                <li>✅ Casillero incluido</li>
+            </ul>
+            {% if request.session.get("user_id") %}
+            <form method="post" action="/dashboard/membresia">
+                <input type="hidden" name="plan_name" value="Básico">
+                <input type="hidden" name="price" value="15000">
+                <input type="hidden" name="dias" value="30">
+                <button type="submit" class="w-full text-center border border-emerald-600 text-emerald-600 rounded-lg py-2 font-medium hover:bg-emerald-50">
+                    Elegir plan
+                </button>
+            </form>
+            {% else %}
+            <a href="/register" class="w-full text-center border border-emerald-600 text-emerald-600 rounded-lg py-2 font-medium hover:bg-emerald-50">
+                Elegir plan
+            </a>
+            {% endif %}
         </div>
-        <div class="bg-white rounded-xl shadow p-6 text-center border-2 border-emerald-500">
-            <h3 class="font-bold text-lg mb-2">Trimestral</h3>
-            <p class="text-3xl font-bold text-emerald-600 mb-2">$40.000</p>
-            <p class="text-sm text-gray-500">Sala + clases grupales incluidas</p>
+
+        <!-- Plus (destacado) -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-emerald-500 flex flex-col relative">
+            <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                Más elegido
+            </span>
+            <h3 class="font-bold text-lg mb-1">Plus</h3>
+            <p class="text-xs text-gray-400 mb-4">Pago trimestral</p>
+            <p class="text-3xl font-bold mb-1">$40.000<span class="text-sm font-normal text-gray-400">/trimestre</span></p>
+            <p class="text-sm text-emerald-600 font-medium mb-4">≈ $13.333/mes · ahorrás 11%</p>
+            <ul class="text-sm text-gray-600 space-y-2 mb-6 flex-1">
+                <li>✅ Todo lo del plan Básico</li>
+                <li>✅ Clases grupales incluidas</li>
+                <li>✅ Evaluación física mensual</li>
+                <li>✅ 1 clase de invitado por mes</li>
+            </ul>
+            {% if request.session.get("user_id") %}
+            <form method="post" action="/dashboard/membresia">
+                <input type="hidden" name="plan_name" value="Plus">
+                <input type="hidden" name="price" value="40000">
+                <input type="hidden" name="dias" value="90">
+                <button type="submit" class="w-full text-center bg-emerald-600 text-white rounded-lg py-2 font-medium hover:bg-emerald-700">
+                    Elegir plan
+                </button>
+            </form>
+            {% else %}
+            <a href="/register" class="w-full text-center bg-emerald-600 text-white rounded-lg py-2 font-medium hover:bg-emerald-700">
+                Elegir plan
+            </a>
+            {% endif %}
         </div>
-        <div class="bg-white rounded-xl shadow p-6 text-center">
-            <h3 class="font-bold text-lg mb-2">Anual</h3>
-            <p class="text-3xl font-bold text-emerald-600 mb-2">$140.000</p>
-            <p class="text-sm text-gray-500">Todo incluido + 2 meses gratis</p>
+
+        <!-- Premium -->
+        <div class="bg-white rounded-xl shadow p-6 flex flex-col">
+            <h3 class="font-bold text-lg mb-1">Premium</h3>
+            <p class="text-xs text-gray-400 mb-4">Pago anual</p>
+            <p class="text-3xl font-bold mb-1">$140.000<span class="text-sm font-normal text-gray-400">/año</span></p>
+            <p class="text-sm text-emerald-600 font-medium mb-4">≈ $11.667/mes · ahorrás 22%</p>
+            <ul class="text-sm text-gray-600 space-y-2 mb-6 flex-1">
+                <li>✅ Todo lo del plan Plus</li>
+                <li>✅ Clases grupales ilimitadas</li>
+                <li>✅ Congelamiento de membresía (hasta 30 días/año)</li>
+                <li>✅ Prioridad para reservar clases</li>
+            </ul>
+            {% if request.session.get("user_id") %}
+            <form method="post" action="/dashboard/membresia">
+                <input type="hidden" name="plan_name" value="Premium">
+                <input type="hidden" name="price" value="140000">
+                <input type="hidden" name="dias" value="365">
+                <button type="submit" class="w-full text-center border border-emerald-600 text-emerald-600 rounded-lg py-2 font-medium hover:bg-emerald-50">
+                    Elegir plan
+                </button>
+            </form>
+            {% else %}
+            <a href="/register" class="w-full text-center border border-emerald-600 text-emerald-600 rounded-lg py-2 font-medium hover:bg-emerald-50">
+                Elegir plan
+            </a>
+            {% endif %}
         </div>
+
     </div>
 </section>
 
@@ -53,10 +133,17 @@
 
 <!-- CTA final -->
 <section class="text-center py-10 bg-gray-900 text-white rounded-xl">
-    <h2 class="text-2xl font-bold mb-4">¿Listo para empezar?</h2>
-    <a href="/register" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-700">
-        Crear mi cuenta gratis
-    </a>
+    {% if request.session.get("user_id") %}
+        <h2 class="text-2xl font-bold mb-4">¿Listo para tu próxima clase?</h2>
+        <a href="/clases" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-700">
+            Ver clases disponibles
+        </a>
+    {% else %}
+        <h2 class="text-2xl font-bold mb-4">¿Listo para empezar?</h2>
+        <a href="/register" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-700">
+            Crear mi cuenta gratis
+        </a>
+    {% endif %}
 </section>
 
 {% endblock %}

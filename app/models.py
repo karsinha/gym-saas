@@ -27,6 +27,7 @@ class MembershipStatus(str, enum.Enum):
     active = "active"
     expired = "expired"
     paused = "paused"
+    pending = "pending"
 
 
 class User(Base):
@@ -35,6 +36,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     full_name = Column(String(120), nullable=False)
     email = Column(String(120), unique=True, index=True, nullable=False)
+    phone = Column(String(30), nullable=True)
     password_hash = Column(String(255), nullable=False)
     role = Column(SAEnum(UserRole), default=UserRole.user, nullable=False)
     is_active = Column(Boolean, default=True)
@@ -68,6 +70,7 @@ class Payment(Base):
     amount = Column(Numeric(10, 2), nullable=False)
     payment_date = Column(DateTime, default=datetime.utcnow)
     method = Column(String(40), default="efectivo")
+    external_id = Column(String(120), unique=True, nullable=True)
 
     user = relationship("User", back_populates="payments")
 

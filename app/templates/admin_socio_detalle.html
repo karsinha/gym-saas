@@ -24,9 +24,16 @@
 <li class="py-2 flex justify-between items-center">
     <span>{{ m.plan_name }} ({{ m.start_date }} → {{ m.end_date }})</span>
     <span class="flex items-center gap-3">
-        <span class="{{ 'text-emerald-600' if m.status.value == 'active' else 'text-red-600' }}">
-            {{ "Activa" if m.status.value == "active" else "Vencida" }}
+        <span class="{% if m.status.value == 'active' %}text-emerald-600{% elif m.status.value == 'pending' %}text-amber-600{% else %}text-red-600{% endif %}">
+            {% if m.status.value == "active" %}Activa
+            {% elif m.status.value == "pending" %}Pendiente
+            {% else %}Vencida{% endif %}
         </span>
+        {% if m.status.value == "pending" %}
+        <form method="post" action="/admin/socios/{{ socio.id }}/membership/{{ m.id }}/confirmar">
+            <button type="submit" class="text-emerald-600 hover:text-emerald-800 text-xs font-medium">Confirmar pago</button>
+        </form>
+        {% endif %}
         <form method="post" action="/admin/socios/{{ socio.id }}/membership/{{ m.id }}/eliminar"
               onsubmit="return confirm('¿Eliminar esta membresía?');">
             <button type="submit" class="text-red-500 hover:text-red-700 text-xs">✕</button>

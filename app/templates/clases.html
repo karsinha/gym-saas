@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Clases{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Clases grupales</h1>
+
+<div class="bg-white rounded-xl shadow overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-left text-gray-500">
+            <tr>
+                <th class="px-4 py-3">Clase</th>
+                <th class="px-4 py-3">Día</th>
+                <th class="px-4 py-3">Hora</th>
+                <th class="px-4 py-3">Instructor</th>
+                <th class="px-4 py-3">Cupos libres</th>
+                <th class="px-4 py-3"></th>
+            </tr>
+        </thead>
+        <tbody class="divide-y">
+            {% for row in data %}
+            <tr>
+                <td class="px-4 py-3 font-medium">{{ row.clase.name }}</td>
+                <td class="px-4 py-3 text-gray-500">{{ row.clase.day_of_week }}</td>
+                <td class="px-4 py-3 text-gray-500">{{ row.clase.start_time }}</td>
+                <td class="px-4 py-3 text-gray-500">{{ row.clase.instructor or "-" }}</td>
+                <td class="px-4 py-3">
+                    {% if row.cupos_libres > 0 %}
+                        <span class="text-emerald-600 font-medium">{{ row.cupos_libres }}</span>
+                    {% else %}
+                        <span class="text-red-500 font-medium">Completo</span>
+                    {% endif %}
+                </td>
+                <td class="px-4 py-3 text-right">
+                    {% if row.ya_reservado %}
+                        <form method="post" action="/clases/{{ row.clase.id }}/cancelar">
+                            <button type="submit" class="text-red-600 font-medium">Cancelar</button>
+                        </form>
+                    {% elif row.cupos_libres > 0 %}
+                        <form method="post" action="/clases/{{ row.clase.id }}/reservar">
+                            <button type="submit" class="text-emerald-600 font-medium">Reservar</button>
+                        </form>
+                    {% else %}
+                        <span class="text-gray-400 text-xs">Sin cupo</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" class="px-4 py-6 text-center text-gray-400">Todavía no hay clases cargadas.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
